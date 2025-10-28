@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>The Great Escape — Quantum Grid</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- GSAP for animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+  <!-- Three.js reserved for later steps (kept ready) -->
+  <script src="https://unpkg.com/three@0.152.2/build/three.min.js" defer></script>
+  <!-- Socket.io client will be added later when we connect Replit -->
+</head>
+<body>
+  <div id="stage">
+    <canvas id="starfield"></canvas>
+
+    <div id="container">
+      <section id="boardArea" aria-label="Game board">
+        <div id="boardFrame">
+          <img id="boardImage" src="assets/board.png" alt="The Great Escape board">
+          <canvas id="boardOverlay"></canvas>
+        </div>
+        <div id="boardCaption">The Great Escape — Quantum Grid</div>
+      </section>
+
+      <aside id="panel">
+        <div class="logo">
+          <div class="logoMark"></div>
+          <div class="logoText">THE GREAT ESCAPE</div>
+        </div>
+
+        <div class="authCard" role="form" aria-labelledby="loginTitle">
+          <h2 id="loginTitle">Join the Grid</h2>
+
+          <label for="roleSelect" class="label">Role</label>
+          <select id="roleSelect" aria-label="Role">
+            <option value="mainAdmin">Main Admin</option>
+            <option value="admin">Admin</option>
+            <option value="player">Player</option>
+            <option value="spectator">Spectator</option>
+          </select>
+
+          <label for="passwordInput" class="label">Password</label>
+          <input id="passwordInput" type="password" inputmode="text" autocomplete="off" spellcheck="false" placeholder="Type your password">
+
+          <div class="controlRow">
+            <button id="connectBtn" class="btn primary">Connect</button>
+            <button id="infoBtn" class="btn ghost">Info</button>
+          </div>
+
+          <div id="authFeedback" class="feedback" aria-live="polite"></div>
+        </div>
+
+        <div id="sessionInfo" class="infoCard hidden" aria-hidden="true">
+          <div><strong>Role:</strong> <span id="currentRole">—</span></div>
+          <div><strong>Connection:</strong> <span id="connectionState">local</span></div>
+          <div id="openAdmin" class="adminLink hidden"><button class="btn small" id="openAdminPanel">Open Control Deck</button></div>
+        </div>
+
+        <div class="tipsCard">
+          <div class="muted">Tips</div>
+          <ul>
+            <li>Type the password for the role and press Connect.</li>
+            <li>Main Admin has full control through a visual control deck.</li>
+            <li>We will add secure server verification next; this step is client entry UI.</li>
+          </ul>
+        </div>
+
+        <footer class="panelFooter">© 2025 The Great Escape</footer>
+      </aside>
+    </div>
+  </div>
+
+  <script src="script.js" defer></script>
+</body>
+</html>
