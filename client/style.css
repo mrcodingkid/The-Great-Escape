@@ -1,0 +1,71 @@
+/* style.css - Blue Neon Futuristic theme (professional) */
+
+:root{
+  --bg-1: #020617;
+  --panel: rgba(7,18,31,0.68);
+  --accent: #00d0ff;
+  --accent2: #9b5cff;
+  --glass: rgba(255,255,255,0.04);
+  --muted: #9ed7ff;
+  --text: #e6fbff;
+  --card: linear-gradient(180deg, rgba(0,208,255,0.06), rgba(155,92,255,0.02));
+}
+
+*{box-sizing:border-box;font-family: 'Rajdhani', system-ui, -apple-system, sans-serif;color:var(--text)}
+html,body,#stage{height:100%;margin:0;background:var(--bg-1);overflow:hidden}
+
+/* starfield canvas covers whole background */
+#starfield{position:fixed;inset:0;z-index:0}
+
+/* main layout */
+#container{position:relative;display:flex;gap:28px;padding:38px;z-index:6;align-items:flex-start;height:100%}
+
+/* board area */
+#boardArea{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center}
+#boardFrame{width:920px;height:920px;max-width:calc(100vw - 420px);border-radius:18px;background:linear-gradient(180deg, rgba(0,0,0,0.25), rgba(0,0,0,0.15));box-shadow:0 18px 60px rgba(0,0,0,0.7);overflow:hidden;position:relative;border:1px solid rgba(0,208,255,0.08)}
+#boardImage{width:100%;height:100%;object-fit:cover;display:block;filter:contrast(1.05) saturate(1.05)}
+#boardOverlay{position:absolute;inset:0;pointer-events:none}
+
+/* right panel */
+#panel{width:360px;display:flex;flex-direction:column;gap:18px;align-items:stretch}
+.logo{display:flex;gap:12px;align-items:center}
+.logoMark{width:52px;height:52px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent2));box-shadow:0 6px 30px rgba(0,208,255,0.14);border:1px solid rgba(255,255,255,0.04)}
+.logoText{font-family: 'Orbitron', sans-serif;font-weight:700;color:var(--accent);font-size:1.05rem;letter-spacing:1px}
+
+/* cards */
+.authCard,.infoCard,.tipsCard{background:var(--panel);padding:18px;border-radius:12px;border:1px solid rgba(0,208,255,0.06);box-shadow:0 10px 30px rgba(0,0,0,0.6)}
+.authCard h2{margin:0 0 10px 0;color:var(--accent)}
+.label{display:block;margin:8px 0 6px;font-size:0.9rem;color:var(--muted)}
+select,input{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.03);background:var(--glass);color:var(--text);outline:none}
+input::placeholder{color:rgba(230,251,255,0.45)}
+.controlRow{display:flex;gap:10px;margin-top:12px}
+.btn{padding:10px 14px;border-radius:10px;border:none;cursor:pointer;font-weight:600}
+.btn.primary{background:linear-gradient(90deg,var(--accent),#66f1ff);color:#002b36;box-shadow:0 8px 28px rgba(0,208,255,0.08)}
+.btn.ghost{background:transparent;border:1px solid rgba(255,255,255,0.04);color:var(--muted)}
+.btn.small{padding:8px 10px;font-size:0.86rem}
+
+/* feedback and info */
+.feedback{margin-top:12px;height:22px;font-size:0.95rem;color:#ffdede}
+.hidden{display:none}
+.infoCard div{margin-bottom:6px}
+.tipsCard .muted{color:rgba(190,230,255,0.6);font-size:0.9rem;margin-bottom:6px}
+.tipsCard ul{margin:0;padding-left:18px;line-height:1.5;color:rgba(190,230,255,0.9)}
+
+/* footer */
+.panelFooter{text-align:center;margin-top:6px;color:rgba(160,220,255,0.7);font-size:0.85rem}
+
+/* subtle hover visuals */
+select:hover,input:hover,.btn:hover{transform:translateY(-2px);transition:transform 170ms ease}
+.btn.primary:active{transform:translateY(0) scale(0.995)}
+
+/* responsive */
+@media (max-width:1100px){
+  #container{padding:18px}
+  #panel{width:320px}
+  #boardFrame{max-width:calc(100vw - 340px);width:680px;height:680px}
+}
+@media (max-width:760px){
+  #container{flex-direction:column;align-items:center}
+  #panel{width:92%}
+  #boardFrame{width:92%;height:60vh}
+}
