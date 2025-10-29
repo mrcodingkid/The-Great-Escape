@@ -1,6 +1,7 @@
 // server/game-logic.js
-const BOARD_TILES = 64; // square 8x8
+const BOARD_TILES = 64; // 8x8 square board
 
+// Create the starting game state
 function createInitialState() {
   const tiles = Array.from({ length: BOARD_TILES }).map((_, i) => ({
     index: i,
@@ -13,7 +14,7 @@ function createInitialState() {
   return {
     boardSize: 8,
     tiles,
-    players: {}, // socketId -> { id, role, name, pos, team, cards:[] }
+    players: {},      // socketId -> { id, role, name, pos, team, cards:[] }
     orderedTurns: [],
     turnIndex: 0,
     running: false,
@@ -21,20 +22,21 @@ function createInitialState() {
   };
 }
 
+// Dice rules depend on team and role
 function rollDiceForRole(role, team) {
-  // returns a result object
   if (role === "player" && team === "red") {
-    const faces = ["1","2","3","4","5","TRAP"];
+    const faces = ["1", "2", "3", "4", "5", "TRAP"];
     return faces[Math.floor(Math.random() * faces.length)];
   } else if (role === "player" && team === "orange") {
-    const faces = ["WALL","0","2","3","4","6"];
+    const faces = ["WALL", "0", "2", "3", "4", "6"];
     return faces[Math.floor(Math.random() * faces.length)];
   } else {
-    // spectators/admins shouldn't roll
+    // admins/spectators don't roll
     return null;
   }
 }
 
+// Move a player forward by N spaces
 function movePlayer(state, playerId, spaces) {
   const p = state.players[playerId];
   if (!p) return false;
@@ -44,6 +46,7 @@ function movePlayer(state, playerId, spaces) {
   return true;
 }
 
+// Place a trap on a given tile index
 function placeTrap(state, placerId, targetIndex) {
   if (targetIndex < 0 || targetIndex >= state.tiles.length) return false;
   const tile = state.tiles[targetIndex];
