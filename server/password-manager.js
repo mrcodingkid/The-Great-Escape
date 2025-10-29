@@ -3,8 +3,10 @@ const fs = require("fs-extra");
 const path = require("path");
 const bcrypt = require("bcrypt");
 
+// path to the role passwords file
 const ROLES_FILE = path.resolve(__dirname, "roles.json");
 
+// default role passwords (Main Admin, Admin, Player, Spectator)
 const DEFAULTS = {
   mainAdmin: process.env.MAIN_ADMIN_PASSWORD || "TheGEAdmin",
   admin: "Admin",
@@ -18,30 +20,32 @@ class PasswordManager {
     this.file = ROLES_FILE;
   }
 
+  // initialize the manager (loads or creates file)
   async initialize() {
     try {
       if (await fs.pathExists(this.file)) {
-        const j = await fs.readJSON(this.file);
-        this.hashes = j;
+        const data = await fs.readJSON(this.file);
+        this.hashes = data;
       } else {
-        // create initial hashed file
+        // create a new one with defaults
         const toSave = {};
-        for (const [k, v] of Object.entries(DEFAULTS)) {
+        for (const [role, plain] of Object.entries(DEFAULTS)) {
           const salt = await bcrypt.genSalt(10);
-          toSave[k] = await bcrypt.hash(String(v), salt);
+          toSave[role] = await bcrypt.hash(String(plain), salt);
         }
         this.hashes = toSave;
         await fs.writeJSON(this.file, this.hashes, { spaces: 2 });
       }
-      console.log("PasswordManager initialized");
+      console.log("✅ PasswordManager initialized");
     } catch (err) {
-      console.error("PasswordManager init error:", err);
-      // fallback to defaults (not hashed) - not ideal, but avoids crash
+      console.error("⚠️ PasswordManager init error:", err);
+      // fallback if file missing
       this.hashes = {};
-      for (const k of Object.keys(DEFAULTS)) this.hashes[k] = null;
+      for (const key of Object.keys(DEFAULTS)) this.hashes[key] = null;
     }
   }
 
+  // verify a role's password
   async verify(role, plain) {
     if (!this.hashes || !this.hashes[role]) return false;
     try {
@@ -52,11 +56,12 @@ class PasswordManager {
     }
   }
 
+  // change a password (Main Admin control)
   async setPassword(role, newPlain) {
     try {
       const salt = await bcrypt.genSalt(10);
-      const h = await bcrypt.hash(String(newPlain), salt);
-      this.hashes[role] = h;
+      const hash = await bcrypt.hash(String(newPlain), salt);
+      this.hashes[role] = hash;
       await fs.writeJSON(this.file, this.hashes, { spaces: 2 });
       return true;
     } catch (e) {
@@ -67,3 +72,4 @@ class PasswordManager {
 }
 
 module.exports = PasswordManager;
+
