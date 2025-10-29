@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Control - The Great Escape</title>
+  <link rel="stylesheet" href="style.css" />
+  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+</head>
+<body>
+  <div id="admin-panel" class="screen">
+    <h1 class="title">⚙️ Control Center</h1>
+
+    <div class="panel">
+      <h3>Active Players</h3>
+      <ul id="playerList"></ul>
+    </div>
+
+    <div class="panel">
+      <h3>Actions</h3>
+      <button id="resetGame">🔄 Reset Board</button>
+      <button id="refreshPlayers">♻️ Refresh Player List</button>
+      <input type="text" id="broadcastMsg" placeholder="Broadcast message" />
+      <button id="sendBroadcast">📢 Send</button>
+    </div>
+
+    <div class="panel">
+      <h3>Password Manager</h3>
+      <label>Role</label>
+      <select id="pwRole">
+        <option value="mainAdmin">Main Admin</option>
+        <option value="admin">Admin</option>
+        <option value="player">Player</option>
+        <option value="spectator">Spectator</option>
+      </select>
+      <input type="text" id="newPassword" placeholder="New password" />
+      <button id="changePw">💾 Update Password</button>
+    </div>
+
+    <button id="logout">🚪 Logout</button>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
