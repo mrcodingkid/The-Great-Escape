@@ -5,43 +5,52 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>The Great Escape</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
 </head>
 <body>
-  <div id="login-screen" class="screen">
+  <div id="login-screen" class="screen active">
     <h1 class="title">🌐 The Great Escape</h1>
     <div class="login-box">
-      <label>Role</label>
       <select id="role">
         <option value="mainAdmin">Main Admin</option>
         <option value="admin">Admin</option>
         <option value="player">Player</option>
         <option value="spectator">Spectator</option>
       </select>
-
-      <label>Password</label>
-      <input type="password" id="password" placeholder="Enter password" />
-
-      <label>Display Name</label>
-      <input type="text" id="displayName" placeholder="Your nickname" />
-
-      <button id="joinBtn">Join Game</button>
-      <p id="statusMsg"></p>
+      <input id="password" type="password" placeholder="Password" />
+      <input id="displayName" type="text" placeholder="Display Name" />
+      <button id="loginBtn">ENTER</button>
+      <p id="loginStatus"></p>
     </div>
   </div>
 
-  <div id="game-screen" class="screen hidden">
-    <h2 id="roleLabel"></h2>
+  <div id="game-screen" class="screen">
+    <div id="hud">
+      <h2 id="player-info"></h2>
+      <button id="rollDiceBtn">🎲 Roll Dice</button>
+      <button id="moveBtn">➡️ Move</button>
+      <button id="trapBtn">💣 Place Trap</button>
+    </div>
+
     <div id="board"></div>
-    <div id="controls">
-      <button id="rollBtn">🎲 Roll Dice</button>
-      <button id="moveBtn">Move</button>
-      <button id="trapBtn">Place Trap</button>
-      <button id="resetBtn">Reset (Admin)</button>
+
+    <div id="admin-panel" class="hidden">
+      <h3>Admin Panel</h3>
+      <input id="newPassRole" placeholder="Role (player/admin/etc)" />
+      <input id="newPass" type="password" placeholder="New Password" />
+      <button id="changePassBtn">Change Password</button>
+      <button id="getPlayersBtn">Get Players</button>
+      <button id="resetBtn">Reset Game</button>
+      <div id="playerList"></div>
     </div>
-    <pre id="log"></pre>
+
+    <div id="chat-box">
+      <input id="chatInput" placeholder="Type message..." />
+      <button id="sendBtn">Send</button>
+      <div id="messages"></div>
+    </div>
   </div>
 
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
