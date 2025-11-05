@@ -29,7 +29,10 @@ connectBtn.addEventListener("click", () => {
 });
 
 // Server -> Login success
-socket.on("loginSuccess", role => {
+socket.on("loginSuccess", role => {document.getElementById("openAdminPanel").onclick = () => {
+    document.getElementById("adminDeck").classList.remove("hidden");
+};
+
     feedback.textContent = "Access Granted — Welcome to the Grid";
     feedback.style.color = "#5cffc8";
 
@@ -54,4 +57,37 @@ socket.on("loginFail", msg => {
 // Live player list update (for admin panel later)
 socket.on("playerList", list => {
     console.log("Online players:", list);
+});
+// Admin controls
+const refreshBtn = document.getElementById("refreshPlayers");
+const playerList = document.getElementById("playerList");
+const sendBroadcast = document.getElementById("sendBroadcast");
+const broadcastMsg = document.getElementById("broadcastMsg");
+const changePassBtn = document.getElementById("changePassBtn");
+
+refreshBtn.onclick = () => socket.emit("getPlayers");
+
+sendBroadcast.onclick = () => {
+  socket.emit("broadcast", { message: broadcastMsg.value });
+  broadcastMsg.value = "";
+};
+
+changePassBtn.onclick = () => {
+  socket.emit("changePassword", {
+    role: document.getElementById("changeRole").value,
+    newPass: document.getElementById("newPass").value
+  });
+};
+
+// Server returns player list
+socket.on("playerList", list => {
+  playerList.innerHTML = "";
+  list.forEach(p => {
+    const li = document.createElement("li");
+    li.innerHTML = `
+      ${p.displayName} (${p.role})
+      <button onclick="socket.emit('kickPlayer',{id:'${p.id}'})">Kick</button>
+    `;
+    playerList.appendChild(li);
+  });
 });
