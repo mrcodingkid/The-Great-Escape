@@ -5,3 +5,44 @@ button{padding:10px 14px;background:linear-gradient(90deg,#00eaff,#0077ff);borde
 .hidden{display:none}
 #board{height:640px;background:linear-gradient(180deg,#001020,#000);border-radius:8px;margin-top:16px;display:flex;align-items:center;justify-content:center}
 #log{margin-top:10px;height:120px;overflow:auto;background:#021824;padding:10px;border-radius:6px}
+.adminPanel {
+  margin-top: 12px;
+  padding: 14px;
+  border: 1px solid rgba(0,208,255,0.1);
+  background: rgba(0,10,30,0.5);
+  border-radius: 8px;
+  animation: fadeInDeck .4s ease;
+}
+
+@keyframes fadeInDeck {
+  from {opacity:0; transform: translateY(5px);}
+  to {opacity:1; transform: translateY(0);}
+}
+
+.adminPanel input {
+  width: 100%;
+  padding: 6px;
+  margin-bottom: 6px;
+  border-radius: 6px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  color: #aafdff;
+}
+
+.playerList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.playerList li {
+  padding: 5px;
+  margin-bottom: 4px;
+  border: 1px solid rgba(0,208,255,0.1);
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+}
+.playerList button {
+  font-size: 0.7rem;
+}
