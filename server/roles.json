@@ -1,6 +1,46 @@
-{
-  "mainAdmin": "",
-  "admin": "",
-  "player": "",
-  "spectator": ""
-}
+const express = require("express");
+const app = express();
+const http = require("http").createServer(app);
+const io = require("socket.io")(http, { cors: { origin: "*" } });
+const fs = require("fs");
+const bcrypt = require("bcrypt");
+
+// Load role passwords
+let roles = JSON.parse(fs.readFileSync(__dirname + "/roles.json"));
+
+// Load bans
+let bans = JSON.parse(fs.readFileSync(__dirname + "/bans.json"));
+
+// Player list
+let players = {};
+
+io.on("connection", socket => {
+    console.log("Player connected:", socket.id);
+
+    socket.on("login", async ({ role, password }) => {
+        if (bans[socket.id]) {
+            socket.emit("loginFail", "BANNED");
+            return;
+        }
+
+        const isCorrect = await bcrypt.compare(password, roles[role]);
+
+        if (!isCorrect) {
+            socket.emit("loginFail", "Wrong Password");
+            return;
+        }
+
+        players[socket.id] = { id: socket.id, role };
+        socket.emit("loginSuccess", role);
+        io.emit("playerList", Object.values(players));
+    });
+
+    socket.on("disconnect", () => {
+        delete players[socket.id];
+        io.emit("playerList", Object.values(players));
+    });
+});
+
+app.use(express.static("client"));
+
+http.listen(3000, () => console.log("✅ Server running on 3000"));
