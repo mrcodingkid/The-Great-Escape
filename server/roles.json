@@ -1,46 +1,7 @@
-const express = require("express");
-const app = express();
-const http = require("http").createServer(app);
-const io = require("socket.io")(http, { cors: { origin: "*" } });
-const fs = require("fs");
-const bcrypt = require("bcrypt");
+{
+  "mainAdmin": "$2b$10$w4X1/jj8A5QfLbrhF5XheuTRNmy3Vn37eLWgh2SJu3t16JYVG2g9y",
+  "admin": "$2b$10$Ggh4UxO2B0HBL2Y0ctT1/uxBhu8Edq9m5gffkXSOk4MG5GVR66vIm",
+  "player": "$2b$10$K6im8C2MNWlEJ0KJ5Z1O.eQpC9PFN0tC5NNXxgT8N9P/.2GZ/8auq",
+  "spectator": "$2b$10$18sU8JsgFKno0M7CG7D3M.VF3rclb8POJ8YJ9VuT2C1xDcWCrELSe"
+}
 
-// Load role passwords
-let roles = JSON.parse(fs.readFileSync(__dirname + "/roles.json"));
-
-// Load bans
-let bans = JSON.parse(fs.readFileSync(__dirname + "/bans.json"));
-
-// Player list
-let players = {};
-
-io.on("connection", socket => {
-    console.log("Player connected:", socket.id);
-
-    socket.on("login", async ({ role, password }) => {
-        if (bans[socket.id]) {
-            socket.emit("loginFail", "BANNED");
-            return;
-        }
-
-        const isCorrect = await bcrypt.compare(password, roles[role]);
-
-        if (!isCorrect) {
-            socket.emit("loginFail", "Wrong Password");
-            return;
-        }
-
-        players[socket.id] = { id: socket.id, role };
-        socket.emit("loginSuccess", role);
-        io.emit("playerList", Object.values(players));
-    });
-
-    socket.on("disconnect", () => {
-        delete players[socket.id];
-        io.emit("playerList", Object.values(players));
-    });
-});
-
-app.use(express.static("client"));
-
-http.listen(3000, () => console.log("✅ Server running on 3000"));
