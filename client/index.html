@@ -1,36 +1,118 @@
-
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>The Great Escape</title>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>The Great Escape — Quantum Grid</title>
+
+  <!-- Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css">
+
+  <!-- GSAP Animations -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js" defer></script>
+
+  <!-- Socket.io (added when server connects) -->
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js" defer></script>
+
 </head>
 <body>
-  <div id="login">
-    <img src="assets/logo.png" alt="logo" id="logo">
-    <h1>THE GREAT ESCAPE</h1>
-    <label>Role</label>
-    <select id="role">
-      <option value="mainAdmin">Main Admin</option>
-      <option value="admin">Admin</option>
-      <option value="player">Player</option>
-      <option value="spectator">Spectator</option>
-    </select>
-    <input id="password" type="password" placeholder="Password (spectator not required)">
-    <input id="name" placeholder="Display name">
-    <button id="connect">Connect</button>
-    <div id="status"></div>
+  <div id="stage">
+    <canvas id="starfield"></canvas>
+
+    <div id="container">
+      <section id="boardArea" aria-label="Game board">
+        <div id="boardFrame">
+          <img id="boardImage" src="assets/board.png" alt="The Great Escape board">
+          <canvas id="boardOverlay"></canvas>
+        </div>
+        <div id="boardCaption">The Great Escape — Quantum Grid</div>
+      </section>
+
+      <aside id="panel">
+        <div class="logo">
+          <div class="logoMark"></div>
+          <div class="logoText">THE GREAT ESCAPE</div>
+        </div>
+
+        <!-- Login Card -->
+        <div class="authCard" role="form" aria-labelledby="loginTitle">
+          <h2 id="loginTitle">Join The Grid</h2>
+
+          <label for="roleSelect" class="label">Role</label>
+          <select id="roleSelect" aria-label="Role">
+            <option value="mainAdmin">Main Admin</option>
+            <option value="admin">Admin</option>
+            <option value="player">Player</option>
+            <option value="spectator">Spectator</option>
+          </select>
+
+          <label for="passwordInput" class="label">Password</label>
+          <input id="passwordInput"
+                 type="password"
+                 inputmode="text"
+                 autocomplete="off"
+                 spellcheck="false"
+                 placeholder="Enter password">
+
+          <div class="controlRow">
+            <button id="connectBtn" class="btn primary">Connect</button>
+            <button id="infoBtn" class="btn ghost">Info</button>
+          </div>
+
+          <div id="authFeedback" class="feedback" aria-live="polite"></div>
+        </div>
+
+        <!-- Session info after login -->
+        <div id="sessionInfo" class="infoCard hidden" aria-hidden="true">
+          <div><strong>Role:</strong> <span id="currentRole">—</span></div>
+          <div><strong>Connection:</strong> <span id="connectionState">local</span></div>
+          <div id="openAdmin" class="adminLink hidden">
+            <button class="btn small" id="openAdminPanel">Open Control Deck</button>
+          </div>
+        </div>
+
+        <!-- ✅ Admin Control Deck Panel -->
+        <div id="adminDeck" class="hidden adminPanel">
+          <h3>Control Deck</h3>
+
+          <div class="deckGroup">
+            <button id="refreshPlayers" class="btn small">Refresh Players</button>
+            <button id="resetGame" class="btn small">Reset Game</button>
+          </div>
+
+          <div class="deckGroup">
+            <input id="broadcastMsg" placeholder="Broadcast message" />
+            <button id="sendBroadcast" class="btn small">Send</button>
+          </div>
+
+          <div class="deckGroup">
+            <input id="changeRole" placeholder="Role (admin/player)" />
+            <input id="newPass" placeholder="New Password" type="password"/>
+            <button id="changePassBtn" class="btn small">Change Password</button>
+          </div>
+
+          <h4>Players Online</h4>
+          <ul id="playerList" class="playerList"></ul>
+        </div>
+
+        <!-- Tips -->
+        <div class="tipsCard">
+          <div class="muted">Tips</div>
+          <ul>
+            <li>Type password & connect.</li>
+            <li>Main Admin can open control deck.</li>
+          </ul>
+        </div>
+
+        <footer class="panelFooter">© 2025 The Great Escape — Kai Ze Studio</footer>
+      </aside>
+    </div>
   </div>
 
-  <div id="game" class="hidden">
-    <div id="topbar">Topbar HUD</div>
-    <div id="board">Board area (3D will go here)</div>
-    <div id="log">Log</div>
-  </div>
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="/socket.io/socket.io.js"></script>
-  <script src="script.js"></script>
+  <script src="script.js" defer></script>
 </body>
 </html>
+
