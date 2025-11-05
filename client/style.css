@@ -1,12 +1,7 @@
-body {
-  background: black;
-  color: cyan;
-  font-family: Arial;
-  text-align: center;
-  padding-top: 40px;
-}
-
-select, button {
-  padding: 10px;
-  margin-top: 10px;
-}
+body{font-family:Arial,Helvetica,sans-serif;background:#000;color:#0ff;margin:0;padding:20px}
+#login{max-width:420px;margin:40px auto;padding:18px;background:#001827;border-radius:10px;border:1px solid rgba(0,200,255,0.08)}
+input,select{width:100%;padding:10px;margin:8px 0;border-radius:8px;background:#021a27;border:1px solid rgba(255,255,255,0.02);color:#bff}
+button{padding:10px 14px;background:linear-gradient(90deg,#00eaff,#0077ff);border:none;border-radius:8px;color:#001;font-weight:700;cursor:pointer}
+.hidden{display:none}
+#board{height:640px;background:linear-gradient(180deg,#001020,#000);border-radius:8px;margin-top:16px;display:flex;align-items:center;justify-content:center}
+#log{margin-top:10px;height:120px;overflow:auto;background:#021824;padding:10px;border-radius:6px}
