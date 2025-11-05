@@ -1,29 +1,36 @@
-<!DOCTYPE html>
-<html>
+
+<!doctype html>
+<html lang="en">
 <head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <title>The Great Escape</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <div id="login">
+    <img src="assets/logo.png" alt="logo" id="logo">
+    <h1>THE GREAT ESCAPE</h1>
+    <label>Role</label>
+    <select id="role">
+      <option value="mainAdmin">Main Admin</option>
+      <option value="admin">Admin</option>
+      <option value="player">Player</option>
+      <option value="spectator">Spectator</option>
+    </select>
+    <input id="password" type="password" placeholder="Password (spectator not required)">
+    <input id="name" placeholder="Display name">
+    <button id="connect">Connect</button>
+    <div id="status"></div>
+  </div>
 
-<div id="login">
-  <h1>THE GREAT ESCAPE</h1>
+  <div id="game" class="hidden">
+    <div id="topbar">Topbar HUD</div>
+    <div id="board">Board area (3D will go here)</div>
+    <div id="log">Log</div>
+  </div>
 
-  <label>Role:</label>
-  <select id="role">
-    <option value="player">Player</option>
-    <option value="spectator">Spectator</option>
-  </select>
-
-  <button id="enterBtn">Enter Game</button>
-
-</div>
-
-<div id="game" style="display:none;">
-  <h2>Game Area</h2>
-  <p>Waiting for multiplayer…</p>
-</div>
-
-<script src="script.js"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
