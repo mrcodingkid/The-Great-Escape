@@ -301,4 +301,3 @@ setTimeout(()=>{ try{ socket.emit('getState'); socket.emit('getPlayers'); }catch
 window.__applyServerState = applyServerState;
 
 console.log('3D board ready — use WASD to move if you are Player.');
-
