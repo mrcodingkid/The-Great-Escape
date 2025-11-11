@@ -1,7 +1,58 @@
 // server/game-logic.js
-const BOARD_TILES = 60;
-function createInitialState(){ const tiles = Array.from({length:BOARD_TILES}).map((_,i)=>({index:i,hasTrap:false,trapBy:null,hasCard:false,blocked:false})); return {boardSize:BOARD_TILES,tiles,players:{},orderedTurns:[],turnIndex:0,running:false,events:[],stats:{wins:{}}}; }
-function rollDiceForRole(role,team){ if(role==='player'&&team==='red'){ const faces=['1','2','3','4','5','TRAP']; return faces[Math.floor(Math.random()*faces.length)]; } else if(role==='player'&&team==='orange'){ const faces=['WALL','0','2','3','4','6']; return faces[Math.floor(Math.random()*faces.length)]; } else return null; }
-function movePlayer(state,playerId,spaces){ const p=state.players[playerId]; if(!p) return false; const newPos=Math.max(0,Math.min(state.tiles.length-1,p.pos+Number(spaces))); p.pos=newPos; state.events.push({ts:Date.now(),type:'move',actor:playerId,to:newPos}); return true; }
-function placeTrap(state,placerId,targetIndex){ if(targetIndex<0||targetIndex>=state.tiles.length) return false; const tile=state.tiles[targetIndex]; tile.hasTrap=true; tile.trapBy=placerId; state.events.push({ts:Date.now(),type:'trapPlaced',by:placerId,index:targetIndex}); return true; }
-module.exports={createInitialState,rollDiceForRole,movePlayer,placeTrap};
+// Minimal logic for 3D grid movement (8x8 board)
+
+const BOARD_SIZE = 8;
+
+function createInitialState() {
+  return {
+    players: {},     // id -> { id, role, name, x, y }
+    events: []
+  };
+}
+
+function addPlayer(state, id, role, name) {
+  // spawn all players at center
+  state.players[id] = {
+    id,
+    role,
+    name,
+    x: 3,
+    y: 3
+  };
+}
+
+function removePlayer(state, id) {
+  delete state.players[id];
+}
+
+function movePlayer(state, id, dir) {
+  const p = state.players[id];
+  if (!p) return;
+
+  if (dir === "up")    p.y -= 1;
+  if (dir === "down")  p.y += 1;
+  if (dir === "left")  p.x -= 1;
+  if (dir === "right") p.x += 1;
+
+  // clamp to board
+  p.x = Math.max(0, Math.min(BOARD_SIZE - 1, p.x));
+  p.y = Math.max(0, Math.min(BOARD_SIZE - 1, p.y));
+
+  state.events.push({
+    type: "move",
+    id,
+    x: p.x,
+    y: p.y,
+    ts: Date.now()
+  });
+
+  return p;
+}
+
+module.exports = {
+  createInitialState,
+  addPlayer,
+  removePlayer,
+  movePlayer,
+  BOARD_SIZE
+};
