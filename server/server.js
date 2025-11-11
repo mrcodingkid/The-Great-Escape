@@ -1,53 +1,72 @@
+// server/server.js
 const express = require("express");
+const http = require("http");
+const { Server } = require("socket.io");
+const logic = require("./game-logic");
+
 const app = express();
-const http = require("http").createServer(app);
-const io = require("socket.io")(http, { cors: { origin: "*" } });
-const fs = require("fs");
-const bcrypt = require("bcrypt");
+const server = http.createServer(app);
+const io = new Server(server, { cors: { origin: "*" } });
 
-// Load role passwords
-let roles = JSON.parse(fs.readFileSync(__dirname + "/roles.json"));
+// ---- GAME STATE ----
+let state = logic.createInitialState();
 
-// Load bans
-let bans = JSON.parse(fs.readFileSync(__dirname + "/bans.json"));
+// ---- STATIC CLIENT ----
+app.use(express.static("../client"));
 
-// Player list
-let players = {};
+io.on("connection", (socket) => {
+  console.log("Client connected:", socket.id);
 
-io.on("connection", socket => {
-    console.log("Player connected:", socket.id);
+  // login or joinRoom (we support both)
+  socket.on("joinRoom", (data) => {
+    const role = data.role || "player";
+    const name = data.displayName || role;
 
-    socket.on("login", async ({ role, password }) => {
-        if (bans[socket.id]) {
-            socket.emit("loginFail", "BANNED");
-            return;
-        }
+    logic.addPlayer(state, socket.id, role, name);
 
-        const isCorrect = await bcrypt.compare(password, roles[role]);
-
-        if (!isCorrect) {
-            socket.emit("loginFail", "Wrong Password");
-            return;
-        }
-
-        players[socket.id] = { id: socket.id, role };
-        socket.emit("loginSuccess", role);
-        io.emit("playerList", Object.values(players));
+    socket.emit("authResult", {
+      ok: true,
+      role,
+      state
     });
 
-    socket.on("disconnect", () => {
-        delete players[socket.id];
-        io.emit("playerList", Object.values(players));
-    });
+    io.emit("stateUpdate", state);
+  });
+
+  socket.on("login", (data) => {
+    const role = data.role || "player";
+
+    logic.addPlayer(state, socket.id, role, role);
+
+    socket.emit("loginSuccess", role);
+    io.emit("stateUpdate", state);
+  });
+
+  // movement events
+  socket.on("move", (dir) => {
+    const p = logic.movePlayer(state, socket.id, dir);
+    if (p) io.emit("playerMoved", p);
+  });
+
+  socket.on("playerMove", (data) => {
+    const p = logic.movePlayer(state, socket.id, data.dir);
+    if (p) io.emit("playerMoved", p);
+  });
+
+  socket.on("clientAction", (data) => {
+    if (data.type === "move") {
+      const dir = data.dir;
+      const p = logic.movePlayer(state, socket.id, dir);
+      if (p) io.emit("playerMoved", p);
+    }
+  });
+
+  socket.on("disconnect", () => {
+    logic.removePlayer(state, socket.id);
+    io.emit("stateUpdate", state);
+    console.log("Disconnected:", socket.id);
+  });
 });
-
-app.use(express.static("client"));
-
-http.listen(3000, () => console.log("✅ Server running on 3000"));
-
 
 const PORT = process.env.PORT || 3000;
-server.listen(PORT, () => {
-  console.log('Server listening on port', PORT);
-  setInterval(() => { saveManager.save(state); }, 60000);
-});
+server.listen(PORT, () => console.log("Server running on", PORT));
